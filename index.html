@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>jQuery Mobile</title>
+  <meta name="viewport" content="width=device-width, initial-scale-1">
+  <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+  <link rel="stylesheet" href="resources/css/style.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+  <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+  <script src="resources/js/jquery.simpleWeather.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.min.js"></script>
+  <script src="resources/js/script.js"></script>
+</head>
+<body>
+
+      <div id="Home" data-role="page">
+        <div data-role="panel" id="searchCity">
+          <form class="ui-filterable">
+            <input id="city" data-type="search" placeholder="Find a city...">
+            <a href="#searchCity" id="checkWeather" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-search">Check Weather</a>
+          </form>
+          <label for="list"><h3>Popular Cities</h3></label>
+          <ul id="cityList" name="list" data-role="listview" data-inset="true">
+            <script id="pageTemplate" type="text/x-handlebars-template">
+              {{#.}}
+              <li><a href="#searchCity" data-rel="close">{{this}}</a></li>
+              {{/.}}
+            </script>
+          </ul>
+        </div><!-- /panel -->
+        <div data-role="header">
+          <a id="search" href="#searchCity" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-search">Search</a>
+          <h1>Weather App</h1>
+          <button id="js-geolocation" class="ui-btn ui-btn-right ui-btn-mini ui-shadow ui-corner-all ui-btn-icon-right ui-icon-location">Location</button>
+        </div>
+        <div id="content" role="main" class="ui-content">
+          <div id="weather"></div>
+          <div id="chart">
+            <canvas id="canvas" width="300" height="250"></canvas>
+          </div>
+        </div>
+        <div data-role="footer">
+          <h1>&copy; 2016</h1>
+        </div>
+      </div>
+
+
+
+
+
+</body>
+</html>
