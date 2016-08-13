@@ -23,7 +23,7 @@ $(document).one('pagecreate', function(){
   //load recent cities
   $('#recent').on('tap', function() {
     loadRecentCities();
-  })
+  });
 
   //check if user browser has geolocation feature
   if (navigator && navigator.geolocation) {
