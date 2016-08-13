@@ -20,6 +20,11 @@ $(document).one('pagecreate', function(){
     $('#searchCity').trigger('updatelayout');
   }
 
+  //load recent cities
+  $('#recent').on('tap', function() {
+    loadRecentCities();
+  })
+
   //check if user browser has geolocation feature
   if (navigator && navigator.geolocation) {
     $('#js-geolocation').show();
@@ -52,12 +57,28 @@ $(document).one('pagecreate', function(){
   $(document).on('tap', 'li', function() {
     var city = $(this).text();
     loadWeather(city, '');
+    //add to recent cities array
+    var index = recentCities.indexOf(city);
+    if(index > -1) {
+      recentCities.move(index, 0);
+    } else {
+      recentCities.unshift(city);
+    }
+    localStorage.recentCities = JSON.stringify(recentCities);
   });
 
   //search city event
   $(document).on('tap', '#checkWeather', function() {
     var city = $('#city').val();
     loadWeather(city, '');
+    //add to recent cities array
+    var index = recentCities.indexOf(city);
+    if(index > -1) {
+      recentCities.move(index, 0);
+    } else {
+      recentCities.unshift(city);
+    }
+    localStorage.recentCities = JSON.stringify(recentCities);
   });
 
 
@@ -135,4 +156,21 @@ $(document).one('pagecreate', function(){
       }
     });
   }
+
+  //local storage
+  var recentCities = [];
+  function loadRecentCities() {
+    if(localStorage.recentCities){
+      recentCities = JSON.parse(localStorage.recentCities);
+      $('ul#recentList').empty();
+      recentCities.map(item => $('ul#recentList').append('<li><a class="ui-btn ui-btn-icon-left ui-icon-carat-l" href="#recentSearch">' + item + '</a></li>'));
+      $('#recentList').listview('refresh');
+    }
+  }
+
+  // move item in the array
+  Array.prototype.move = function (from, to) {
+    this.splice(to, 0, this.splice(from, 1)[0]);
+  }
+
 });

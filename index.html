@@ -28,11 +28,17 @@
               {{/.}}
             </script>
           </ul>
-        </div><!-- /panel -->
+        </div><!-- /left panel -->
+        <!-- right panel -->
+        <div data-role="panel" data-position="right" id="recentSearch">
+          <label for="recentlist"><h3>Recent Search</h3></label>
+          <ul id="recentList" name="recentlist" data-role="listview" data-inset="true">
+          </ul>
+        </div><!-- /right panel -->
         <div data-role="header">
           <a id="search" href="#searchCity" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-search">Search</a>
           <h1>Weather App</h1>
-          <button id="js-geolocation" class="ui-btn ui-btn-right ui-btn-mini ui-shadow ui-corner-all ui-btn-icon-right ui-icon-location">Location</button>
+          <a id="recent" href="#recentSearch" class="ui-btn ui-btn-right ui-btn-mini ui-shadow ui-corner-all ui-btn-icon-right ui-icon-navigation">Recent</a>
         </div>
         <div id="content" role="main" class="ui-content">
           <div id="weather"></div>
@@ -40,8 +46,8 @@
             <canvas id="canvas" width="300" height="250"></canvas>
           </div>
         </div>
-        <div data-role="footer">
-          <h1>&copy; 2016</h1>
+        <div data-role="footer" style="text-align:center;">
+          <button id="js-geolocation" class="ui-btn ui-btn-corner-all ui-shadow ui-btn-icon-right ui-icon-location">Use Your Location</button>
         </div>
       </div>
 

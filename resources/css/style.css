@@ -70,7 +70,7 @@ i {
 }
 
 #weather {
-  height:78vh;
+  height:80vh;
   display: flex;
   justify-content: flex-start;
   flex-direction: column;
