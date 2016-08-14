@@ -42,26 +42,24 @@ $(document).one('pagecreate', function(){
     loadRecentCities();
   });
 
-  //check if user browser has geolocation feature
-  if (navigator && navigator.geolocation) {
-    $('#js-geolocation').show();
-  //   function success(pos) {
-  //     loadWeather(pos.lat+','+pos.lng);
-  //   }
-  //   function fail(error) {
-  //     loadWeather(defaultLatLng.lat+','+defaultLatLng.lng);
-  //   }
-  //   navigator.geolocation.getCurrentPosition(success, fail, {timeout: 5000});
-  } else {
-    $('#js-geolocation').hide();
-  //   loadWeather(defaultLatLng.lat+','+defaultLatLng.lng);
-  }
-
   // default location -- Oakville
   var defaultLatLng = {
     "lat": 43.4520403,
     "lng": -79.7361763
   };
+
+  //check if user browser has geolocation feature
+  if (navigator && navigator.geolocation) {
+    $('#js-geolocation').show();
+    if($.isEmptyObject(myLocation)) {
+      loadWeather(defaultLatLng.lat+','+defaultLatLng.lng);
+    } else {
+      loadWeather(myLocation.lat+','+myLocation.lng);
+    }
+  } else {
+    $('#js-geolocation').hide();
+    loadWeather(defaultLatLng.lat+','+defaultLatLng.lng);
+  }
 
   //get current location
   var myLocation = {};
@@ -74,18 +72,25 @@ $(document).one('pagecreate', function(){
     });
     return deferred.promise();
   }
+
   // show weather of current location when page is loaded
+  // show current location if it exists
+  // otherwise show default location --oakville
   getLocation().done(function() {
-    loadWeather(myLocation.lat+','+myLocation.lng);
+    if($.isEmptyObject(myLocation)) {
+      loadWeather(defaultLatLng.lat+','+defaultLatLng.lng);
+    } else {
+      loadWeather(myLocation.lat+','+myLocation.lng);
+    }
   });
 
   //location button event
   //if geolocation works, show it, otherwise show default location
   $('#js-geolocation').on('tap', function() {
-    if(myLocation) {
-      loadWeather(myLocation.lat+','+myLocation.lng);
-    } else {
+    if($.isEmptyObject(myLocation)) {
       loadWeather(defaultLatLng.lat+','+defaultLatLng.lng);
+    } else {
+      loadWeather(myLocation.lat+','+myLocation.lng);
     }
   });
 
