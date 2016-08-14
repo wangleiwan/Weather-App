@@ -3,21 +3,38 @@ $(document).one('pagecreate', function(){
   var pageTemp = $('#pageTemplate').html();
   var renderPage = Handlebars.compile(pageTemp);
 
-  //populate cities when panel is opened
-  $('#search').on('tap', function() {
-    $.ajax({
-      url: 'resources/data/cities.json',
-      type: 'GET',
-      dataType: 'JSON',
-      success: getCities
-    });
+  var popularCities = [];
+  $.ajax({
+    url: 'resources/data/cities.json',
+    type: 'GET',
+    dataType: 'JSON',
+    success: function(cities) {
+      popularCities = cities; //cache cities
+    }
   });
 
-  function getCities(cities) {
-    var html = renderPage(cities);
+  //populate cities when panel is opened
+  $('#search').on('tap', function() {
+    var html = renderPage(popularCities);
     $('#cityList').html(html);
     $('#cityList').listview('refresh');
     $('#searchCity').trigger('updatelayout');
+  });
+
+  //local storage
+  var recentCities = [];
+  function loadRecentCities() {
+    if(localStorage.recentCities){
+      recentCities = JSON.parse(localStorage.recentCities);
+      $('ul#recentList').empty();
+      recentCities.map(item => $('ul#recentList').append('<li><a class="ui-btn ui-btn-icon-left ui-icon-carat-l" href="#recentSearch" data-rel="close">' + item + '</a></li>'));
+      $('#recentList').listview('refresh');
+      $('#recentSearch').trigger('updatelayout');
+    }
+  }
+  // move item in the array
+  Array.prototype.move = function (from, to) {
+    this.splice(to, 0, this.splice(from, 1)[0]);
   }
 
   //load recent cities
@@ -28,9 +45,23 @@ $(document).one('pagecreate', function(){
   //check if user browser has geolocation feature
   if (navigator && navigator.geolocation) {
     $('#js-geolocation').show();
+  //   function success(pos) {
+  //     loadWeather(pos.lat+','+pos.lng);
+  //   }
+  //   function fail(error) {
+  //     loadWeather(defaultLatLng.lat+','+defaultLatLng.lng);
+  //   }
+  //   navigator.geolocation.getCurrentPosition(success, fail, {timeout: 5000});
   } else {
     $('#js-geolocation').hide();
+  //   loadWeather(defaultLatLng.lat+','+defaultLatLng.lng);
   }
+
+  // default location -- Oakville
+  var defaultLatLng = {
+    "lat": 43.4520403,
+    "lng": -79.7361763
+  };
 
   //get current location
   var myLocation = {};
@@ -43,14 +74,19 @@ $(document).one('pagecreate', function(){
     });
     return deferred.promise();
   }
-  //show weather of current location when page is loaded
+  // show weather of current location when page is loaded
   getLocation().done(function() {
     loadWeather(myLocation.lat+','+myLocation.lng);
   });
 
   //location button event
+  //if geolocation works, show it, otherwise show default location
   $('#js-geolocation').on('tap', function() {
-    loadWeather(myLocation.lat+','+myLocation.lng);
+    if(myLocation) {
+      loadWeather(myLocation.lat+','+myLocation.lng);
+    } else {
+      loadWeather(defaultLatLng.lat+','+defaultLatLng.lng);
+    }
   });
 
   //list item click event
@@ -72,11 +108,13 @@ $(document).one('pagecreate', function(){
     var city = $('#city').val();
     loadWeather(city, '');
     //add to recent cities array
-    var index = recentCities.indexOf(city);
-    if(index > -1) {
-      recentCities.move(index, 0);
+    var i = recentCities.indexOf(city);
+    if(i > -1) {
+      recentCities.move(i, 0);
     } else {
-      recentCities.unshift(city);
+      if(!!city){//!!city checks if city is empty
+        recentCities.unshift(city);
+      }
     }
     localStorage.recentCities = JSON.stringify(recentCities);
   });
@@ -135,6 +173,7 @@ $(document).one('pagecreate', function(){
       type: 'line',
       data: data,
       options:{
+        responsive: false,
         scales: {
           xAxes: [{
             ticks: {
@@ -156,21 +195,4 @@ $(document).one('pagecreate', function(){
       }
     });
   }
-
-  //local storage
-  var recentCities = [];
-  function loadRecentCities() {
-    if(localStorage.recentCities){
-      recentCities = JSON.parse(localStorage.recentCities);
-      $('ul#recentList').empty();
-      recentCities.map(item => $('ul#recentList').append('<li><a class="ui-btn ui-btn-icon-left ui-icon-carat-l" href="#recentSearch">' + item + '</a></li>'));
-      $('#recentList').listview('refresh');
-    }
-  }
-
-  // move item in the array
-  Array.prototype.move = function (from, to) {
-    this.splice(to, 0, this.splice(from, 1)[0]);
-  }
-
 });

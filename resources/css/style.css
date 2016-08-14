@@ -70,7 +70,7 @@ i {
 }
 
 #weather {
-  height:80vh;
+  height: 35vh;
   display: flex;
   justify-content: flex-start;
   flex-direction: column;
@@ -90,8 +90,6 @@ i {
 .ui-filter-inset {
     margin-top: 0;
 }
-
-
 
 #weather li {
   padding:3px;
@@ -116,10 +114,9 @@ i {
 }
 
 #chart {
-  position: absolute;
-  bottom: 20px;
-  left:5px;
-  height: 280px;
+  display: flex;
+  justify-content: center;
+  height: 250px;
 }
 
 #weather p {
